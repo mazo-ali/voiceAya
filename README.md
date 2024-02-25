@@ -1,5 +1,6 @@
 # AyaProject  
 ```
+git clone https://github.com/mazo-ali/voiceAya.git
 python -m venv venv
 # Ubuntu
 source venv/bin/activate

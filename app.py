@@ -4,6 +4,7 @@ app = Flask(__name__)
 # two decorators, same function
 @app.route('/')
 def index():
+    return render_template("microphone.html")    
     return """
     <h1> Welecome </h1>
     <input type="text" > <br>
