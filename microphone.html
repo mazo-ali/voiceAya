@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Recorder</title>
+</head>
+<body>
+<button id="startRecording">Start Recording</button>
+<button id="stopRecording" disabled>Stop Recording</button>
+<audio id="recordedAudio" controls></audio>
+<script>
+const startRecordingButton = document.getElementById('startRecording');
+const stopRecordingButton = document.getElementById('stopRecording');
+const recordedAudioElement = document.getElementById('recordedAudio');
+
+let mediaRecorder;
+let chunks = [];
+
+startRecordingButton.addEventListener('click', startRecording);
+stopRecordingButton.addEventListener('click', stopRecording);
+
+function startRecording() {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function(stream) {
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.ondataavailable = function(event) {
+                chunks.push(event.data);
+            };
+            mediaRecorder.onstop = function() {
+                const blob = new Blob(chunks, { 'type' : 'audio/wav' });
+                const url = URL.createObjectURL(blob);
+                recordedAudioElement.src = url;
+                downloadRecordedAudio(blob); // Call function to download recorded audio
+            };
+            mediaRecorder.start();
+            startRecordingButton.disabled = true;
+            stopRecordingButton.disabled = false;
+        })
+        .catch(function(err) {
+            console.error('Error accessing microphone:', err);
+        });
+}
+
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        startRecordingButton.disabled = false;
+        stopRecordingButton.disabled = true;
+    }
+}
+
+function downloadRecordedAudio(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'record.wav';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
