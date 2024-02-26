@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parrot AI</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .title {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .description-container {
+            max-width: 50%;
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="title">Welcome </br> click to dtart the chat</h1>
+    <div class="description-container" style="position: absolute; top: 20px; right: 20px;">
+        <p class="description">Description en Haut à Droite</p>
+    </div>
+    <div class="description-container" style="position: absolute; bottom: 20px; right: 20px;">
+        <p class="description">Description en Bas à Droite</p>
+    </div>
+    <div class="description-container" style="position: absolute; top: 20px; left: 20px;">
+        <p class="description">Description en Haut à Gauche</p>
+    </div>
+    <div class="description-container" style="position: absolute; bottom: 20px; left: 20px;">
+        <p class="description">Description en Bas à Gauche</p>
+    </div>
+    <button class="button" onclick="window.location.href='{{ url_for('mic') }}'">Start</button>
+
+</div>
+
+<script>
+    let currentIndex = 0;
+    const images = ['1.png', '2.png', '3.jpeg'];
+    const container = document.querySelector('.container');
+
+    function changeBackground() {
+        container.style.backgroundImage = `url(${images[currentIndex]})`;
+        currentIndex = (currentIndex + 1) % images.length;
+    }
+
+    setInterval(changeBackground, 5000); // Change toutes les 5 secondes
+</script>
+
+</body>
+</html>
