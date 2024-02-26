@@ -3,13 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Audio Recorder</title>
+<title>Chatbot</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.chat {
+    padding: 10px;
+    margin-bottom: 20px;
+    overflow-y: auto;
+    height: 300px; /* Adjust height as needed */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.user-message {
+    background-color: #e5f4ff;
+    color: #000;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.system-message {
+    background-color: #f0f0f0;
+    color: #333;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#audioControls {
+    margin-top: 20px;
+}
+
+#startRecording, #stopRecording {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#startRecording:hover, #stopRecording:hover {
+    background-color: #0056b3;
+}
+</style>
 </head>
 <body>
-<button id="startRecording">Start Recording</button>
-<button id="stopRecording" disabled>Stop Recording</button>
-<audio id="recordedAudio" controls></audio>
+  </br>
+<div class="container">
+    <div class="chat" id="chatDisplay">
+        <div class="user-message">Hello, how can I help you?</div>
+        <div class="system-message">Please start recording your message.</div>
+        
+    </div>
+    </br>
+    <div id="audioControls">
+        <button id="startRecording">Start Recording</button>
+        <button id="stopRecording" disabled>Stop Recording</button>
+        </br>
+        </br>
+        <audio id="recordedAudio" controls></audio>
+        </br>
+        </br>
+    </div>
+    </br>
+</div>
+
 <script>
+    // Variables globales
 const startRecordingButton = document.getElementById('startRecording');
 const stopRecordingButton = document.getElementById('stopRecording');
 const recordedAudioElement = document.getElementById('recordedAudio');
@@ -20,6 +97,7 @@ let chunks = [];
 startRecordingButton.addEventListener('click', startRecording);
 stopRecordingButton.addEventListener('click', stopRecording);
 
+// Fonction pour démarrer l'enregistrement audio
 function startRecording() {
     navigator.mediaDevices.getUserMedia({ audio: true })
         .then(function(stream) {
@@ -31,7 +109,7 @@ function startRecording() {
                 const blob = new Blob(chunks, { 'type' : 'audio/wav' });
                 const url = URL.createObjectURL(blob);
                 recordedAudioElement.src = url;
-                downloadRecordedAudio(blob); // Call function to download recorded audio
+                addVoiceMessage(blob); // Ajouter le message vocal au chat
             };
             mediaRecorder.start();
             startRecordingButton.disabled = true;
@@ -42,6 +120,7 @@ function startRecording() {
         });
 }
 
+// Fonction pour arrêter l'enregistrement audio
 function stopRecording() {
     if (mediaRecorder && mediaRecorder.state !== 'inactive') {
         mediaRecorder.stop();
@@ -50,14 +129,28 @@ function stopRecording() {
     }
 }
 
-function downloadRecordedAudio(blob) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'record.wav';
-    a.click();
-    URL.revokeObjectURL(url);
+// Fonction pour ajouter un message vocal au chat
+function addVoiceMessage(audioBlob) {
+    const chatDisplay = document.getElementById('chatDisplay');
+
+    // Créer un nouvel élément audio
+    const audioElement = document.createElement('audio');
+    audioElement.controls = true;
+    audioElement.src = URL.createObjectURL(audioBlob);
+
+    // Créer un élément div pour le message vocal
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'user-message';
+    messageDiv.appendChild(audioElement);
+
+    // Ajouter le message vocal au chat
+    chatDisplay.appendChild(messageDiv);
+
+    // Faire défiler vers le bas pour afficher le nouveau message
+    chatDisplay.scrollTop = chatDisplay.scrollHeight;
 }
-</script>
+
+    </script>
 </body>
 </html>
+
